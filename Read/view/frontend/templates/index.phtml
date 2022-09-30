@@ -1,0 +1,73 @@
+ <style type="text/css">
+        body
+        {
+            font-family: Arial;
+           font-size: 10pt;
+        }
+        table
+        {
+            border: 1px solid #ccc;
+        }
+        table th
+        {
+            background-color: #F7F7F7;
+            color: #333;
+            font-weight: bold;
+        }
+        table th, table td
+        {
+            padding: 5px;
+            border-color: #ccc;
+        }
+    </style>
+
+    <script type="text/javascript">
+    	require(['jquery'],function($){
+
+        $(function () {
+            $("#upload").bind("click", function () {
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+                if (regex.test($("#fileUpload").val().toLowerCase())) {
+                    if (typeof (FileReader) != "undefined") {
+                        var reader = new FileReader();
+                        var temp = [];
+                        reader.onload = function (e) {
+                            var table = $("<table />");
+                            var rows = e.target.result.split("\n");                      
+                              var d=rows[0].split(",");
+                              
+	                           		   for (var i = 1; i < rows.length; i++) {
+                              				row=(rows[i].split(","));
+                              			    var obj = {}
+
+                              			     for (var k = 0; k < d.length; k++) {
+				 	                             
+                              						obj[d[k]] = row[k];
+                              				         
+													}
+	                              			
+	                              				temp.push(obj);
+
+                              			      }	
+                              			  console.log(temp); 
+
+                           
+                            $("#dvCSV").html('');
+                            $("#dvCSV").append(table);
+                        }
+                        reader.readAsText($("#fileUpload")[0].files[0]);
+                    } else {
+                        alert("This browser does not support HTML5.");
+                    }
+                } else {
+                    alert("Please upload a valid CSV file.");
+                }
+            });
+        });
+    	});
+    </script>
+    <input type="file" id="fileUpload" />
+    <input type="button" id="upload" value="Upload" />
+    <hr />
+    <div id="dvCSV">
+    </div>
